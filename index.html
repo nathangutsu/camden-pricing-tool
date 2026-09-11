@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Camden Door Controls — Pricing Tool</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <h1>Camden Door Controls — Pricing Tool</h1>
+    <div class="sub" id="sourceLine">Loading price data…</div>
+  </header>
+
+  <div class="tabs">
+    <button class="tab-btn active" data-panel="panel-lookup">Lookup</button>
+    <button class="tab-btn" data-panel="panel-quote">Quote Builder</button>
+    <button class="tab-btn" data-panel="panel-xref">Strike Cross Reference</button>
+    <button class="tab-btn" data-panel="panel-maglock-xref">Magnetic Lock Cross Reference</button>
+    <button class="tab-btn" data-panel="panel-colswitch">Column Switch Comparison</button>
+  </div>
+
+  <div class="discount-bar">
+    <div class="discount-field">
+      <label for="customPctInput">Discount</label>
+      <input type="text" id="customPctInput" placeholder="e.g. 50-10">
+    </div>
+    <div class="discount-field">
+      <label for="customMultInput">or default net multiplier</label>
+      <input type="number" id="customMultInput" min="0" max="1" step="0.0001" placeholder="e.g. 0.45">
+    </div>
+  </div>
+
+  <div class="panel active" id="panel-lookup">
+    <div class="toolbar">
+      <input type="text" id="searchInput" class="search-input" placeholder="Search part number or partial part number…">
+    </div>
+    <div class="results-meta" id="resultsMeta"></div>
+    <div id="results"></div>
+  </div>
+
+  <div class="panel" id="panel-quote">
+    <div id="quoteEmpty" class="empty-state">No lines yet — search in the Lookup tab and click "Add to Quote".</div>
+    <div id="quoteTableWrap" style="overflow-x:auto;">
+      <table class="quote-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Qty</th>
+            <th>Part</th>
+            <th>Description</th>
+            <th>List</th>
+            <th>Discount</th>
+            <th>Net Unit</th>
+            <th>Ext. Net</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="quoteBody"></tbody>
+      </table>
+    </div>
+
+    <div class="quote-actions no-print">
+      <button class="btn ghost" id="clearQuoteBtn">Clear Quote</button>
+      <button class="btn ghost" id="csvQuoteBtn">Copy as CSV</button>
+      <button class="btn" id="printQuoteBtn">Print / Save as PDF</button>
+    </div>
+
+    <div class="totals-card" id="quoteTotals">
+      <div class="tot list"><div class="label">List Total</div><div class="val" id="totListVal">$0.00</div></div>
+      <div class="tot net"><div class="label">Net Total</div><div class="val" id="totNetVal">$0.00</div></div>
+    </div>
+  </div>
+
+  <div class="panel" id="panel-xref">
+    <div class="xref-intro">Electric Strike Cross Reference Chart — <code>CAMDEN 2026 US Price List R6.pdf</code>, p.15. Type a competitor part number (RCI/dormakaba, H.E.S., Adams Rite, Trine, Von Duprin, or Locknetics) or a Camden part number to find the match.</div>
+    <div class="toolbar">
+      <input type="text" id="xrefSearchInput" class="search-input" placeholder="e.g. F0162, 9500, or CX-EPD1289L…">
+    </div>
+    <div class="results-meta" id="xrefResultsMeta"></div>
+    <div id="xrefResults"></div>
+
+    <h3 class="xref-table-title">Full Reference Sheet</h3>
+    <div style="overflow-x:auto;">
+      <table class="xref-table">
+        <thead>
+          <tr>
+            <th>Description</th>
+            <th>Camden</th>
+            <th>RCI (dormakaba)</th>
+            <th>H.E.S.</th>
+            <th>Adams Rite</th>
+            <th>Trine</th>
+            <th>Von Duprin</th>
+            <th>Locknetics</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody id="xrefTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="panel" id="panel-maglock-xref">
+    <div class="xref-intro">Magnetic Lock Cross Reference Chart — <code>a12123_Magnetic_Lock_Cross_Reference.pdf</code> (a separate Camden reference sheet, not the R6 price list). Type a competitor part number (RCI, Securitron, Schlage, SDC, Dynalock, Rofu, or Alarm Controls) or a Camden part number to find the match.</div>
+    <div class="toolbar">
+      <input type="text" id="maglockXrefSearchInput" class="search-input" placeholder="e.g. 8375, VM300, or CX-90S-03…">
+    </div>
+    <div class="results-meta" id="maglockXrefResultsMeta"></div>
+    <div id="maglockXrefResults"></div>
+
+    <h3 class="xref-table-title">Full Reference Sheet</h3>
+    <div style="overflow-x:auto;">
+      <table class="xref-table">
+        <thead>
+          <tr>
+            <th>Description</th>
+            <th>Camden</th>
+            <th>RCI</th>
+            <th>Securitron</th>
+            <th>Schlage</th>
+            <th>SDC</th>
+            <th>Dynalock</th>
+            <th>Rofu</th>
+            <th>Alarm Controls</th>
+          </tr>
+        </thead>
+        <tbody id="maglockXrefTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="panel" id="panel-colswitch">
+    <div class="xref-intro">Column Switch Comparison — <code>2026-09-11-camden-bea-wikk-crossref.pdf</code> (prepared by The ASH Team). This is a feature/spec comparison, not a part-number lookup — Camden's Column™ push plate switches vs. BEA and Wikk, broken out by product variant (standard, narrow, stainless, wireless).</div>
+    <div id="colswitchSections"></div>
+  </div>
+
+  <footer class="foot">
+    <b>Source files:</b> <span id="footSource"></span>. Every List price comes from the R2.xls; it has no discount-tier data, so this tool only supports a manual % / multiplier override per line, not preset tiers. The price list is a flat 4-column sheet (Item Number, UPC, Description, List USD) with no section/category field, so Lookup is search-only. Part numbers with option suffixes (e.g. finish, LED color, keyed-alike) are priced individually in the source file even when the catalog PDF only shows the base model with an options table — search the exact suffixed part number here rather than assuming the base model's price applies. 8 items are the exception: the CX-DA800 and CX-DA810 door-alarm series aren't in the R2.xls at all — their List prices are pulled from the R6 PDF (p.34–35) instead and marked with a "Price from R6 PDF — not in R2.xls" badge wherever they appear.
+  </footer>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="data.js"></script>
+<script src="crossref.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
