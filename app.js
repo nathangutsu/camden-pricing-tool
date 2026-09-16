@@ -293,7 +293,7 @@
 
   $("#printQuoteBtn").addEventListener("click", () => window.print());
 
-  $("#csvQuoteBtn").addEventListener("click", () => {
+  $("#xlsxQuoteBtn").addEventListener("click", () => {
     const rows = [["Qty", "Part", "Description", "List", "Discount", "Net Unit", "Ext. Net"]];
     state.quote.forEach(line => {
       const r = CAMDEN_DATA[line.recordId];
@@ -301,8 +301,13 @@
       const discLabel = line.value || "List";
       rows.push([line.qty, r.part, r.desc, r.list, discLabel, net != null ? net : "", net != null ? net * line.qty : ""]);
     });
-    const csv = rows.map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(",")).join("\n");
-    navigator.clipboard.writeText(csv).then(() => showToast("Quote copied as CSV"));
+    const ws = XLSX.utils.aoa_to_sheet(rows);
+    ws["!cols"] = [{ wch: 6 }, { wch: 18 }, { wch: 45 }, { wch: 10 }, { wch: 12 }, { wch: 12 }, { wch: 12 }];
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Quote");
+    const stamp = new Date().toISOString().slice(0, 10);
+    XLSX.writeFile(wb, `camden-quote-${stamp}.xlsx`);
+    showToast("Quote downloaded as Excel");
   });
 
   function showToast(msg) {
